@@ -1,8 +1,7 @@
+@import "flag-icons/css/flag-icons.min.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "flag-icons/css/flag-icons.min.css";
-
 @theme {
   --color-wc-red: #E11D48;      /* Replace with your actual hex colors */
   --color-wc-gold: #F59E0B;
