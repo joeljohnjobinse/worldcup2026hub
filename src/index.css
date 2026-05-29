@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@import "flag-icons/css/flag-icons.min.css";
+
+@theme {
+  --color-wc-red: #E11D48;      /* Replace with your actual hex colors */
+  --color-wc-gold: #F59E0B;
+  --color-wc-card: #13131F;
+  --color-wc-border: #27273A;
+  --color-wc-muted: #6B7280;
+  --color-wc-light: #F3F4F6;
+  
+  --font-body: 'Inter', sans-serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #0A0A0F;
+    color: #E8E8F0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3,h4,h5 {
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+}
+
+@layer components {
+
+  .btn-primary {
+    @apply bg-wc-red hover:bg-red-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-200 font-body;
+  }
+
+  .btn-gold {
+    @apply bg-wc-gold hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-lg transition-all duration-200 font-body;
+  }
+
+  .btn-ghost {
+    @apply border border-wc-border hover:border-wc-muted text-wc-light hover:text-white px-6 py-2.5 rounded-lg transition-all duration-200 font-body;
+  }
+
+  .card {
+    @apply bg-wc-card border border-wc-border rounded-xl p-5;
+  }
+
+  .input {
+    @apply bg-[#1A1A28] border border-wc-border text-wc-light rounded-lg px-4 py-2.5 w-full focus:outline-none focus:border-wc-gold transition-colors font-body placeholder:text-wc-muted;
+  }
+
+  .badge {
+    @apply text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide;
+  }
+
+}
