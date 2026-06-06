@@ -132,8 +132,8 @@ const FIFA_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 42">
 <text x="32" y="35" text-anchor="middle" fill="#F0A500" font-size="6" font-family="Arial" font-weight="800" letter-spacing="2">WORLD CUP 2026™</text>
 </svg>`
 
-const TROPHY_URL = `data:image/svg+xml;base64,${btoa(TROPHY_SVG)}`
-const FIFA_URL   = `data:image/svg+xml;base64,${btoa(FIFA_SVG)}`
+const TROPHY_URL = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(TROPHY_SVG)}`
+const FIFA_URL   = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(FIFA_SVG)}`
 
 // ── Barcode SVG ───────────────────────────────────────────────────────────────
 function BarcodeImg({ matchId, color }) {
