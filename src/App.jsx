@@ -11,6 +11,8 @@ import Leaderboard from './pages/Leaderboard'
 import Tickets from './pages/Tickets'
 import Profile from './pages/Profile'
 import Admin from './pages/Admin'
+import Auction from './pages/Auction'
+import Standings from './pages/Standings'
 
 export default function App() {
   return (
@@ -19,16 +21,18 @@ export default function App() {
         <div className="min-h-screen bg-wc-dark">
           <Navbar />
           <Routes>
-            <Route path="/"           element={<Home />} />
-            <Route path="/login"      element={<Login />} />
-            <Route path="/register"   element={<Register />} />
-            <Route path="/schedule"   element={<Schedule />} />
+            <Route path="/"            element={<Home />} />
+            <Route path="/login"       element={<Login />} />
+            <Route path="/register"    element={<Register />} />
+            <Route path="/schedule"    element={<Schedule />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/predict"    element={<ProtectedRoute><Predict /></ProtectedRoute>} />
-            <Route path="/tickets"    element={<ProtectedRoute><Tickets /></ProtectedRoute>} />
-            <Route path="/profile"    element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/admin"      element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
-            <Route path="*"           element={<Navigate to="/" />} />
+            <Route path="/predict"     element={<ProtectedRoute><Predict /></ProtectedRoute>} />
+            <Route path="/tickets"     element={<ProtectedRoute><Tickets /></ProtectedRoute>} />
+            <Route path="/profile"     element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/admin"       element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
+            <Route path="/auction"     element={<Auction />} />
+            <Route path="/standings"   element={<Standings />} />
+            <Route path="*"            element={<Navigate to="/" />} />
           </Routes>
         </div>
       </BrowserRouter>

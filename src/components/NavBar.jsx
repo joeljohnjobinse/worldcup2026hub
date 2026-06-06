@@ -7,6 +7,8 @@ const navLinks = [
   { label: 'Predict',     path: '/predict' },
   { label: 'Leaderboard', path: '/leaderboard' },
   { label: 'Tickets',     path: '/tickets' },
+  { label: 'Auction',     path: '/auction' },
+  { label: 'Standings',   path: '/standings' },
 ]
 
 export default function Navbar() {
