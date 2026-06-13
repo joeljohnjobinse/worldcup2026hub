@@ -1,4 +1,8 @@
-# WC2026 Hub — Setup Guide
+# WC2026 Friends Hub
+
+Site at: https://worldcup2026friendshub.vercel.app/
+
+## Setup Guide
 
 ## 1. Install Dependencies
 
