@@ -1,4 +1,4 @@
-# WC2026 Friends Hub
+# WC2026 Friends Hub ⚽
 
 Site at: https://worldcup2026friendshub.vercel.app/
 
