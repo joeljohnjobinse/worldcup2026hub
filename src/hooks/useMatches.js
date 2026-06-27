@@ -19,10 +19,17 @@ export function useMatches() {
 
   // Merge static data with Firestore overrides.
   // Knockout matches can have homeTeam/awayTeam set via overrides.
-  const matches = STATIC_MATCHES.map(m => ({
-    ...m,
-    ...(overrides[m.id] || {}),
-  }))
+  // Merge overrides then re-sort by date + kickoff to preserve schedule order
+  // (Firestore snapshots return docs in unpredictable order, so we always sort)
+  const matches = STATIC_MATCHES
+    .map(m => ({ ...m, ...(overrides[m.id] || {}) }))
+    .sort((a, b) => {
+      const dtA = (a.date || '') + 'T' + (a.kickoff || '00:00')
+      const dtB = (b.date || '') + 'T' + (b.kickoff || '00:00')
+      if (dtA < dtB) return -1
+      if (dtA > dtB) return 1
+      return 0
+    })
 
   async function updateMatchResult(matchId, finalHome, finalAway) {
     await setDoc(doc(db, 'matches', matchId), {

@@ -1,5 +1,5 @@
-// FIFA World Cup 2026 — Correct match data
-// All times as listed (local display times from the schedule)
+// FIFA World Cup 2026 — Complete match data
+// All times stored as UTC display strings matching the official schedule
 
 export const TEAMS = {
   MEX:  { name: 'Mexico',               flag: 'mx' },
@@ -17,9 +17,9 @@ export const TEAMS = {
   HAI:  { name: 'Haiti',                flag: 'ht' },
   SCO:  { name: 'Scotland',             flag: 'gb-sct' },
   AUS:  { name: 'Australia',            flag: 'au' },
-  TUR:  { name: 'Türkiye',              flag: 'tr' },
+  TUR:  { name: 'Turkiye',              flag: 'tr' },
   GER:  { name: 'Germany',              flag: 'de' },
-  CUW:  { name: 'Curaçao',              flag: 'cw' },
+  CUW:  { name: 'Curacao',              flag: 'cw' },
   NED:  { name: 'Netherlands',          flag: 'nl' },
   JPN:  { name: 'Japan',                flag: 'jp' },
   CIV:  { name: 'Ivory Coast',          flag: 'ci' },
@@ -53,177 +53,207 @@ export const TEAMS = {
 }
 
 export const VENUES = [
-  { name: 'MetLife Stadium',         city: 'New York/New Jersey', country: 'USA' },
-  { name: 'AT&T Stadium',            city: 'Dallas',              country: 'USA' },
-  { name: 'SoFi Stadium',            city: 'Los Angeles',         country: 'USA' },
-  { name: "Levi's Stadium",          city: 'San Francisco',       country: 'USA' },
-  { name: 'Hard Rock Stadium',       city: 'Miami',               country: 'USA' },
-  { name: 'Lincoln Financial Field', city: 'Philadelphia',        country: 'USA' },
-  { name: 'Empower Field',           city: 'Denver',              country: 'USA' },
-  { name: 'Gillette Stadium',        city: 'Boston',              country: 'USA' },
-  { name: 'Arrowhead Stadium',       city: 'Kansas City',         country: 'USA' },
-  { name: 'NRG Stadium',             city: 'Houston',             country: 'USA' },
-  { name: 'Estadio Azteca',          city: 'Mexico City',         country: 'Mexico' },
-  { name: 'Estadio BBVA',            city: 'Guadalajara',         country: 'Mexico' },
-  { name: 'BC Place',                city: 'Vancouver',           country: 'Canada' },
-  { name: 'BMO Field',               city: 'Toronto',             country: 'Canada' },
+  { name: 'MetLife Stadium',         city: 'East Rutherford',  country: 'USA' },   // 0
+  { name: 'AT&T Stadium',            city: 'Arlington',        country: 'USA' },   // 1
+  { name: 'SoFi Stadium',            city: 'Inglewood',        country: 'USA' },   // 2
+  { name: "Levi's Stadium",          city: 'Santa Clara',      country: 'USA' },   // 3
+  { name: 'Hard Rock Stadium',       city: 'Miami Gardens',    country: 'USA' },   // 4
+  { name: 'Lincoln Financial Field', city: 'Philadelphia',     country: 'USA' },   // 5
+  { name: 'Empower Field',           city: 'Denver',           country: 'USA' },   // 6
+  { name: 'Gillette Stadium',        city: 'Foxborough',       country: 'USA' },   // 7
+  { name: 'Arrowhead Stadium',       city: 'Kansas City',      country: 'USA' },   // 8
+  { name: 'NRG Stadium',             city: 'Houston',          country: 'USA' },   // 9
+  { name: 'Estadio Azteca',          city: 'Mexico City',      country: 'Mexico' },// 10
+  { name: 'Estadio BBVA',            city: 'Guadalajara',      country: 'Mexico' },// 11
+  { name: 'BC Place',                city: 'Vancouver',        country: 'Canada' },// 12
+  { name: 'BMO Field',               city: 'Toronto',          country: 'Canada' },// 13
+  { name: 'Lumen Field',             city: 'Seattle',          country: 'USA' },   // 14
+  { name: 'Mercedes-Benz Stadium',   city: 'Atlanta',          country: 'USA' },   // 15
 ]
 
-// Rotating venues across group stage
 const V = VENUES
-const vr = (i) => V[i % V.length]
+
+// Helper: base match shape
+const m = (id, home, away, group, phase, matchday, date, kickoff, venue, label, matchLabel) => ({
+  id, homeTeam: home, awayTeam: away, group, phase, matchday,
+  date, kickoff, venue: venue.name, city: venue.city, country: venue.country,
+  label: label || null, matchLabel: matchLabel || null,
+  finalHome: null, finalAway: null, status: 'upcoming',
+})
 
 export const MATCHES = [
-  // ── GROUP STAGE · 12 Jun ─────────────────────────────────────────────────
-  { id: 'A1', homeTeam: 'MEX', awayTeam: 'RSA', group: 'A', phase: 'Group Stage', matchday: 1, date: '2026-06-12', kickoff: '00:30', venue: V[10].name, city: V[10].city, country: V[10].country, finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'A2', homeTeam: 'KOR', awayTeam: 'CZE', group: 'A', phase: 'Group Stage', matchday: 1, date: '2026-06-12', kickoff: '07:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
 
-  // ── GROUP STAGE · 13 Jun ─────────────────────────────────────────────────
-  { id: 'B1', homeTeam: 'CAN', awayTeam: 'BIH', group: 'B', phase: 'Group Stage', matchday: 1, date: '2026-06-13', kickoff: '00:30', venue: V[12].name, city: V[12].city, country: V[12].country, finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'D1', homeTeam: 'USA', awayTeam: 'PAR', group: 'D', phase: 'Group Stage', matchday: 1, date: '2026-06-13', kickoff: '06:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ════════════════════════════════════════════════════════════════
+  //  GROUP STAGE
+  // ════════════════════════════════════════════════════════════════
 
-  // ── GROUP STAGE · 14 Jun ─────────────────────────────────────────────────
-  { id: 'B2', homeTeam: 'QAT', awayTeam: 'SUI', group: 'B', phase: 'Group Stage', matchday: 1, date: '2026-06-14', kickoff: '00:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'C1', homeTeam: 'BRA', awayTeam: 'MAR', group: 'C', phase: 'Group Stage', matchday: 1, date: '2026-06-14', kickoff: '03:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'C2', homeTeam: 'HAI', awayTeam: 'SCO', group: 'C', phase: 'Group Stage', matchday: 1, date: '2026-06-14', kickoff: '06:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'D2', homeTeam: 'AUS', awayTeam: 'TUR', group: 'D', phase: 'Group Stage', matchday: 1, date: '2026-06-14', kickoff: '09:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'E1', homeTeam: 'GER', awayTeam: 'CUW', group: 'E', phase: 'Group Stage', matchday: 1, date: '2026-06-14', kickoff: '22:30', venue: V[1].name,  city: V[1].city,  country: V[1].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group A ──
+  m('A1', 'MEX','RSA', 'A','Group Stage',1,'2026-06-12','06:00',V[10]),
+  m('A2', 'KOR','CZE', 'A','Group Stage',1,'2026-06-12','13:00',V[0]),
+  m('A3', 'CZE','RSA', 'A','Group Stage',2,'2026-06-19','03:00',V[10]),
+  m('A4', 'MEX','KOR', 'A','Group Stage',2,'2026-06-19','12:00',V[10]),
+  m('A5', 'RSA','KOR', 'A','Group Stage',3,'2026-06-25','12:00',V[10]),
+  m('A6', 'CZE','MEX', 'A','Group Stage',3,'2026-06-25','12:00',V[0]),
 
-  // ── GROUP STAGE · 15 Jun ─────────────────────────────────────────────────
-  { id: 'F1', homeTeam: 'NED', awayTeam: 'JPN', group: 'F', phase: 'Group Stage', matchday: 1, date: '2026-06-15', kickoff: '01:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'E2', homeTeam: 'CIV', awayTeam: 'ECU', group: 'E', phase: 'Group Stage', matchday: 1, date: '2026-06-15', kickoff: '04:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'F2', homeTeam: 'SWE', awayTeam: 'TUN', group: 'F', phase: 'Group Stage', matchday: 1, date: '2026-06-15', kickoff: '07:30', venue: V[6].name,  city: V[6].city,  country: V[6].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'H1', homeTeam: 'ESP', awayTeam: 'CPV', group: 'H', phase: 'Group Stage', matchday: 1, date: '2026-06-15', kickoff: '21:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group B ──
+  m('B1', 'CAN','BIH', 'B','Group Stage',1,'2026-06-13','06:00',V[12]),
+  m('B2', 'QAT','SUI', 'B','Group Stage',1,'2026-06-14','06:00',V[9]),
+  m('B3', 'SUI','BIH', 'B','Group Stage',2,'2026-06-19','06:00',V[11]),
+  m('B4', 'CAN','QAT', 'B','Group Stage',2,'2026-06-19','09:00',V[12]),
+  m('B5', 'SUI','CAN', 'B','Group Stage',3,'2026-06-25','06:00',V[11]),
+  m('B6', 'BIH','QAT', 'B','Group Stage',3,'2026-06-25','06:00',V[12]),
 
-  // ── GROUP STAGE · 16 Jun ─────────────────────────────────────────────────
-  { id: 'G1', homeTeam: 'BEL', awayTeam: 'EGY', group: 'G', phase: 'Group Stage', matchday: 1, date: '2026-06-16', kickoff: '00:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'H2', homeTeam: 'KSA', awayTeam: 'URU', group: 'H', phase: 'Group Stage', matchday: 1, date: '2026-06-16', kickoff: '03:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'G2', homeTeam: 'IRN', awayTeam: 'NZL', group: 'G', phase: 'Group Stage', matchday: 1, date: '2026-06-16', kickoff: '06:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group C ──
+  m('C1', 'BRA','MAR', 'C','Group Stage',1,'2026-06-14','09:00',V[4]),
+  m('C2', 'HAI','SCO', 'C','Group Stage',1,'2026-06-14','12:00',V[5]),
+  m('C3', 'SCO','MAR', 'C','Group Stage',2,'2026-06-20','09:00',V[5]),
+  m('C4', 'BRA','HAI', 'C','Group Stage',2,'2026-06-20','11:30',V[4]),
+  m('C5', 'MAR','HAI', 'C','Group Stage',3,'2026-06-25','09:00',V[4]),
+  m('C6', 'SCO','BRA', 'C','Group Stage',3,'2026-06-25','09:00',V[5]),
 
-  // ── GROUP STAGE · 17 Jun ─────────────────────────────────────────────────
-  { id: 'I1', homeTeam: 'FRA', awayTeam: 'SEN', group: 'I', phase: 'Group Stage', matchday: 1, date: '2026-06-17', kickoff: '00:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'I2', homeTeam: 'IRQ', awayTeam: 'NOR', group: 'I', phase: 'Group Stage', matchday: 1, date: '2026-06-17', kickoff: '03:30', venue: V[1].name,  city: V[1].city,  country: V[1].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'J1', homeTeam: 'ARG', awayTeam: 'ALG', group: 'J', phase: 'Group Stage', matchday: 1, date: '2026-06-17', kickoff: '06:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'J2', homeTeam: 'AUT', awayTeam: 'JOR', group: 'J', phase: 'Group Stage', matchday: 1, date: '2026-06-17', kickoff: '09:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'K1', homeTeam: 'POR', awayTeam: 'COD', group: 'K', phase: 'Group Stage', matchday: 1, date: '2026-06-17', kickoff: '22:30', venue: V[6].name,  city: V[6].city,  country: V[6].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group D ──
+  m('D1', 'USA','PAR', 'D','Group Stage',1,'2026-06-13','12:00',V[0]),
+  m('D2', 'AUS','TUR', 'D','Group Stage',1,'2026-06-14','15:00',V[2]),
+  m('D3', 'USA','AUS', 'D','Group Stage',2,'2026-06-20','06:00',V[0]),
+  m('D4', 'TUR','PAR', 'D','Group Stage',2,'2026-06-20','14:00',V[2]),
+  m('D5', 'TUR','USA', 'D','Group Stage',3,'2026-06-26','13:00',V[2]),
+  m('D6', 'PAR','AUS', 'D','Group Stage',3,'2026-06-26','13:00',V[9]),
 
-  // ── GROUP STAGE · 18 Jun ─────────────────────────────────────────────────
-  { id: 'L1', homeTeam: 'ENG', awayTeam: 'CRO', group: 'L', phase: 'Group Stage', matchday: 1, date: '2026-06-18', kickoff: '01:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'L2', homeTeam: 'GHA', awayTeam: 'PAN', group: 'L', phase: 'Group Stage', matchday: 1, date: '2026-06-18', kickoff: '04:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'K2', homeTeam: 'UZB', awayTeam: 'COL', group: 'K', phase: 'Group Stage', matchday: 1, date: '2026-06-18', kickoff: '07:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'A3', homeTeam: 'CZE', awayTeam: 'RSA', group: 'A', phase: 'Group Stage', matchday: 2, date: '2026-06-18', kickoff: '21:30', venue: V[10].name, city: V[10].city, country: V[10].country, finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group E ──
+  m('E1', 'GER','CUW', 'E','Group Stage',1,'2026-06-15','04:00',V[1]),
+  m('E2', 'CIV','ECU', 'E','Group Stage',1,'2026-06-15','10:00',V[3]),
+  m('E3', 'GER','CIV', 'E','Group Stage',2,'2026-06-21','07:00',V[1]),
+  m('E4', 'ECU','CUW', 'E','Group Stage',2,'2026-06-21','11:00',V[3]),
+  m('E5', 'CUW','CIV', 'E','Group Stage',3,'2026-06-26','07:00',V[3]),
+  m('E6', 'ECU','GER', 'E','Group Stage',3,'2026-06-26','07:00',V[1]),
 
-  // ── GROUP STAGE · 19 Jun ─────────────────────────────────────────────────
-  { id: 'B3', homeTeam: 'SUI', awayTeam: 'BIH', group: 'B', phase: 'Group Stage', matchday: 2, date: '2026-06-19', kickoff: '00:30', venue: V[11].name, city: V[11].city, country: V[11].country, finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'B4', homeTeam: 'CAN', awayTeam: 'QAT', group: 'B', phase: 'Group Stage', matchday: 2, date: '2026-06-19', kickoff: '03:30', venue: V[12].name, city: V[12].city, country: V[12].country, finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'A4', homeTeam: 'MEX', awayTeam: 'KOR', group: 'A', phase: 'Group Stage', matchday: 2, date: '2026-06-19', kickoff: '06:30', venue: V[10].name, city: V[10].city, country: V[10].country, finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group F ──
+  m('F1', 'NED','JPN', 'F','Group Stage',1,'2026-06-15','07:00',V[8]),
+  m('F2', 'SWE','TUN', 'F','Group Stage',1,'2026-06-15','13:00',V[6]),
+  m('F3', 'NED','SWE', 'F','Group Stage',2,'2026-06-21','04:00',V[8]),
+  m('F4', 'TUN','JPN', 'F','Group Stage',2,'2026-06-21','15:00',V[6]),
+  m('F5', 'TUN','NED', 'F','Group Stage',3,'2026-06-26','10:00',V[6]),
+  m('F6', 'JPN','SWE', 'F','Group Stage',3,'2026-06-26','10:00',V[8]),
 
-  // ── GROUP STAGE · 20 Jun ─────────────────────────────────────────────────
-  { id: 'D3', homeTeam: 'USA', awayTeam: 'AUS', group: 'D', phase: 'Group Stage', matchday: 2, date: '2026-06-20', kickoff: '00:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'C3', homeTeam: 'SCO', awayTeam: 'MAR', group: 'C', phase: 'Group Stage', matchday: 2, date: '2026-06-20', kickoff: '03:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'C4', homeTeam: 'BRA', awayTeam: 'HAI', group: 'C', phase: 'Group Stage', matchday: 2, date: '2026-06-20', kickoff: '06:00', venue: V[4].name,  city: V[4].city,  country: V[4].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'D4', homeTeam: 'TUR', awayTeam: 'PAR', group: 'D', phase: 'Group Stage', matchday: 2, date: '2026-06-20', kickoff: '08:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'F3', homeTeam: 'NED', awayTeam: 'SWE', group: 'F', phase: 'Group Stage', matchday: 2, date: '2026-06-20', kickoff: '22:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group G ──
+  m('G1', 'BEL','EGY', 'G','Group Stage',1,'2026-06-16','06:00',V[0]),
+  m('G2', 'IRN','NZL', 'G','Group Stage',1,'2026-06-16','12:00',V[9]),
+  m('G3', 'BEL','IRN', 'G','Group Stage',2,'2026-06-22','06:00',V[0]),
+  m('G4', 'NZL','EGY', 'G','Group Stage',2,'2026-06-22','12:00',V[9]),
+  m('G5', 'NZL','BEL', 'G','Group Stage',3,'2026-06-27','14:00',V[9]),
+  m('G6', 'EGY','IRN', 'G','Group Stage',3,'2026-06-27','14:00',V[0]),
 
-  // ── GROUP STAGE · 21 Jun ─────────────────────────────────────────────────
-  { id: 'E3', homeTeam: 'GER', awayTeam: 'CIV', group: 'E', phase: 'Group Stage', matchday: 2, date: '2026-06-21', kickoff: '01:30', venue: V[1].name,  city: V[1].city,  country: V[1].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'E4', homeTeam: 'ECU', awayTeam: 'CUW', group: 'E', phase: 'Group Stage', matchday: 2, date: '2026-06-21', kickoff: '05:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'F4', homeTeam: 'TUN', awayTeam: 'JPN', group: 'F', phase: 'Group Stage', matchday: 2, date: '2026-06-21', kickoff: '09:30', venue: V[6].name,  city: V[6].city,  country: V[6].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'H3', homeTeam: 'ESP', awayTeam: 'KSA', group: 'H', phase: 'Group Stage', matchday: 2, date: '2026-06-21', kickoff: '21:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group H ──
+  m('H1', 'ESP','CPV', 'H','Group Stage',1,'2026-06-16','03:00',V[7]),
+  m('H2', 'KSA','URU', 'H','Group Stage',1,'2026-06-16','09:00',V[4]),
+  m('H3', 'ESP','KSA', 'H','Group Stage',2,'2026-06-22','03:00',V[7]),
+  m('H4', 'URU','CPV', 'H','Group Stage',2,'2026-06-22','09:00',V[4]),
+  m('H5', 'CPV','KSA', 'H','Group Stage',3,'2026-06-27','11:00',V[7]),
+  m('H6', 'URU','ESP', 'H','Group Stage',3,'2026-06-27','11:00',V[4]),
 
-  // ── GROUP STAGE · 22 Jun ─────────────────────────────────────────────────
-  { id: 'G3', homeTeam: 'BEL', awayTeam: 'IRN', group: 'G', phase: 'Group Stage', matchday: 2, date: '2026-06-22', kickoff: '00:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'H4', homeTeam: 'URU', awayTeam: 'CPV', group: 'H', phase: 'Group Stage', matchday: 2, date: '2026-06-22', kickoff: '03:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'G4', homeTeam: 'NZL', awayTeam: 'EGY', group: 'G', phase: 'Group Stage', matchday: 2, date: '2026-06-22', kickoff: '06:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'J3', homeTeam: 'ARG', awayTeam: 'AUT', group: 'J', phase: 'Group Stage', matchday: 2, date: '2026-06-22', kickoff: '22:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group I ──
+  m('I1', 'FRA','SEN', 'I','Group Stage',1,'2026-06-17','06:00',V[5]),
+  m('I2', 'IRQ','NOR', 'I','Group Stage',1,'2026-06-17','09:00',V[1]),
+  m('I3', 'FRA','IRQ', 'I','Group Stage',2,'2026-06-23','08:00',V[5]),
+  m('I4', 'NOR','SEN', 'I','Group Stage',2,'2026-06-23','11:00',V[1]),
+  m('I5', 'NOR','FRA', 'I','Group Stage',3,'2026-06-27','06:00',V[1]),
+  m('I6', 'SEN','IRQ', 'I','Group Stage',3,'2026-06-27','06:00',V[5]),
 
-  // ── GROUP STAGE · 23 Jun ─────────────────────────────────────────────────
-  { id: 'I3', homeTeam: 'FRA', awayTeam: 'IRQ', group: 'I', phase: 'Group Stage', matchday: 2, date: '2026-06-23', kickoff: '02:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'I4', homeTeam: 'NOR', awayTeam: 'SEN', group: 'I', phase: 'Group Stage', matchday: 2, date: '2026-06-23', kickoff: '05:30', venue: V[1].name,  city: V[1].city,  country: V[1].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'J4', homeTeam: 'JOR', awayTeam: 'ALG', group: 'J', phase: 'Group Stage', matchday: 2, date: '2026-06-23', kickoff: '08:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'K3', homeTeam: 'POR', awayTeam: 'UZB', group: 'K', phase: 'Group Stage', matchday: 2, date: '2026-06-23', kickoff: '22:30', venue: V[6].name,  city: V[6].city,  country: V[6].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group J ──
+  m('J1', 'ARG','ALG', 'J','Group Stage',1,'2026-06-17','12:00',V[2]),
+  m('J2', 'AUT','JOR', 'J','Group Stage',1,'2026-06-17','15:00',V[3]),
+  m('J3', 'ARG','AUT', 'J','Group Stage',2,'2026-06-23','04:00',V[2]),
+  m('J4', 'JOR','ALG', 'J','Group Stage',2,'2026-06-23','14:00',V[3]),
+  m('J5', 'ALG','AUT', 'J','Group Stage',3,'2026-06-28','13:00',V[3]),
+  m('J6', 'JOR','ARG', 'J','Group Stage',3,'2026-06-28','13:00',V[2]),
 
-  // ── GROUP STAGE · 24 Jun ─────────────────────────────────────────────────
-  { id: 'L3', homeTeam: 'ENG', awayTeam: 'GHA', group: 'L', phase: 'Group Stage', matchday: 2, date: '2026-06-24', kickoff: '01:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'L4', homeTeam: 'PAN', awayTeam: 'CRO', group: 'L', phase: 'Group Stage', matchday: 2, date: '2026-06-24', kickoff: '04:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'K4', homeTeam: 'COL', awayTeam: 'COD', group: 'K', phase: 'Group Stage', matchday: 2, date: '2026-06-24', kickoff: '07:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group K ──
+  m('K1', 'POR','COD', 'K','Group Stage',1,'2026-06-18','04:00',V[6]),
+  m('K2', 'UZB','COL', 'K','Group Stage',1,'2026-06-18','13:00',V[0]),
+  m('K3', 'POR','UZB', 'K','Group Stage',2,'2026-06-24','04:00',V[6]),
+  m('K4', 'COL','COD', 'K','Group Stage',2,'2026-06-24','13:00',V[0]),
+  m('K5', 'COL','POR', 'K','Group Stage',3,'2026-06-28','10:30',V[0]),
+  m('K6', 'COD','UZB', 'K','Group Stage',3,'2026-06-28','10:30',V[6]),
 
-  // ── GROUP STAGE · 25 Jun ─────────────────────────────────────────────────
-  { id: 'B5', homeTeam: 'SUI', awayTeam: 'CAN', group: 'B', phase: 'Group Stage', matchday: 3, date: '2026-06-25', kickoff: '00:30', venue: V[11].name, city: V[11].city, country: V[11].country, finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'B6', homeTeam: 'BIH', awayTeam: 'QAT', group: 'B', phase: 'Group Stage', matchday: 3, date: '2026-06-25', kickoff: '00:30', venue: V[12].name, city: V[12].city, country: V[12].country, finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'C5', homeTeam: 'MAR', awayTeam: 'HAI', group: 'C', phase: 'Group Stage', matchday: 3, date: '2026-06-25', kickoff: '03:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'C6', homeTeam: 'SCO', awayTeam: 'BRA', group: 'C', phase: 'Group Stage', matchday: 3, date: '2026-06-25', kickoff: '03:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'A5', homeTeam: 'RSA', awayTeam: 'KOR', group: 'A', phase: 'Group Stage', matchday: 3, date: '2026-06-25', kickoff: '06:30', venue: V[10].name, city: V[10].city, country: V[10].country, finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'A6', homeTeam: 'CZE', awayTeam: 'MEX', group: 'A', phase: 'Group Stage', matchday: 3, date: '2026-06-25', kickoff: '06:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ── Group L ──
+  m('L1', 'ENG','CRO', 'L','Group Stage',1,'2026-06-18','07:00',V[7]),
+  m('L2', 'GHA','PAN', 'L','Group Stage',1,'2026-06-18','10:00',V[8]),
+  m('L3', 'ENG','GHA', 'L','Group Stage',2,'2026-06-24','07:00',V[7]),
+  m('L4', 'PAN','CRO', 'L','Group Stage',2,'2026-06-24','10:00',V[8]),
+  m('L5', 'PAN','ENG', 'L','Group Stage',3,'2026-06-28','08:00',V[8]),
+  m('L6', 'CRO','GHA', 'L','Group Stage',3,'2026-06-28','08:00',V[7]),
 
-  // ── GROUP STAGE · 26 Jun ─────────────────────────────────────────────────
-  { id: 'E5', homeTeam: 'CUW', awayTeam: 'CIV', group: 'E', phase: 'Group Stage', matchday: 3, date: '2026-06-26', kickoff: '01:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'E6', homeTeam: 'ECU', awayTeam: 'GER', group: 'E', phase: 'Group Stage', matchday: 3, date: '2026-06-26', kickoff: '01:30', venue: V[1].name,  city: V[1].city,  country: V[1].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'F5', homeTeam: 'TUN', awayTeam: 'NED', group: 'F', phase: 'Group Stage', matchday: 3, date: '2026-06-26', kickoff: '04:30', venue: V[6].name,  city: V[6].city,  country: V[6].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'F6', homeTeam: 'JPN', awayTeam: 'SWE', group: 'F', phase: 'Group Stage', matchday: 3, date: '2026-06-26', kickoff: '04:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'D5', homeTeam: 'TUR', awayTeam: 'USA', group: 'D', phase: 'Group Stage', matchday: 3, date: '2026-06-26', kickoff: '07:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'D6', homeTeam: 'PAR', awayTeam: 'AUS', group: 'D', phase: 'Group Stage', matchday: 3, date: '2026-06-26', kickoff: '07:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ════════════════════════════════════════════════════════════════
+  //  ROUND OF 32  (Matches 73–88)
+  // ════════════════════════════════════════════════════════════════
+  m('R32-1', 'RSA','CAN',null,'Round of 32',null,'2026-06-29','00:30',V[2],'RSA vs CAN','M73'),
+  m('R32-2', 'GER','PAR',null,'Round of 32',null,'2026-06-30','02:00',V[7],'GER vs PAR','M74'),
+  m('R32-3', 'NED','MAR',null,'Round of 32',null,'2026-06-30','06:30',V[11],'NED vs MAR','M75'),
+  m('R32-4', 'BRA','JPN',null,'Round of 32',null,'2026-06-29','22:30',V[9],'BRA vs JPN','M76'),
+  m('R32-5', 'FRA','SWE',null,'Round of 32',null,'2026-07-01','02:30',V[0],'FRA vs SWE','M77'),
+  m('R32-6', 'CIV','NOR',null,'Round of 32',null,'2026-06-30','22:30',V[1],'CIV vs NOR','M78'),
+  m('R32-7', null,null,null,'Round of 32',null,'2026-07-01','06:30',V[10],'MEX vs Best 3rd (C/E)','M79'),
+  m('R32-8', null,null,null,'Round of 32',null,'2026-07-01','21:30',V[15],'Winner L vs Best 3rd (I/J/K)','M80'),
+  m('R32-9', 'USA','BIH',null,'Round of 32',null,'2026-07-02','05:30',V[3],'USA vs BIH','M81'),
+  m('R32-10', null,null,null,'Round of 32',null,'2026-07-02','01:30',V[14],'BEL vs Best 3rd (A/I/J)','M82'),
+  m('R32-11', null,null,null,'Round of 32',null,'2026-07-03','04:30',V[13],'Runner-up K vs Runner-up L','M83'),
+  m('R32-12', 'ESP',null,null,'Round of 32',null,'2026-07-03','00:30',V[2],'ESP vs Runner-up J','M84'),
+  m('R32-13', 'SUI',null,null,'Round of 32',null,'2026-07-03','08:30',V[12],'SUI vs Best 3rd (G/J)','M85'),
+  m('R32-14', 'ARG','CPV',null,'Round of 32',null,'2026-07-04','03:30',V[4],'ARG vs CPV','M86'),
+  m('R32-15', null,null,null,'Round of 32',null,'2026-07-04','07:00',V[8],'Winner K vs Best 3rd (E/I/L)','M87'),
+  m('R32-16', 'AUS','EGY',null,'Round of 32',null,'2026-07-03','23:30',V[1],'AUS vs EGY','M88'),
 
-  // ── GROUP STAGE · 27 Jun ─────────────────────────────────────────────────
-  { id: 'I5', homeTeam: 'NOR', awayTeam: 'FRA', group: 'I', phase: 'Group Stage', matchday: 3, date: '2026-06-27', kickoff: '00:30', venue: V[1].name,  city: V[1].city,  country: V[1].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'I6', homeTeam: 'SEN', awayTeam: 'IRQ', group: 'I', phase: 'Group Stage', matchday: 3, date: '2026-06-27', kickoff: '00:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'H5', homeTeam: 'CPV', awayTeam: 'KSA', group: 'H', phase: 'Group Stage', matchday: 3, date: '2026-06-27', kickoff: '05:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'H6', homeTeam: 'URU', awayTeam: 'ESP', group: 'H', phase: 'Group Stage', matchday: 3, date: '2026-06-27', kickoff: '05:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'G5', homeTeam: 'NZL', awayTeam: 'BEL', group: 'G', phase: 'Group Stage', matchday: 3, date: '2026-06-27', kickoff: '08:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'G6', homeTeam: 'EGY', awayTeam: 'IRN', group: 'G', phase: 'Group Stage', matchday: 3, date: '2026-06-27', kickoff: '08:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ════════════════════════════════════════════════════════════════
+  //  ROUND OF 16  (Matches 89–96)
+  // ════════════════════════════════════════════════════════════════
+  m('R16-1', null,null,null,'Round of 16',null,'2026-07-05','02:30',V[5],'Winner M74 vs Winner M77','M89'),
+  m('R16-2', null,null,null,'Round of 16',null,'2026-07-04','22:30',V[9],'Winner M73 vs Winner M75','M90'),
+  m('R16-3', null,null,null,'Round of 16',null,'2026-07-06','01:30',V[0],'Winner M76 vs Winner M78','M91'),
+  m('R16-4', null,null,null,'Round of 16',null,'2026-07-06','05:30',V[10],'Winner M79 vs Winner M80','M92'),
+  m('R16-5', null,null,null,'Round of 16',null,'2026-07-07','00:30',V[1],'Winner M83 vs Winner M84','M93'),
+  m('R16-6', null,null,null,'Round of 16',null,'2026-07-07','05:30',V[14],'Winner M81 vs Winner M82','M94'),
+  m('R16-7', null,null,null,'Round of 16',null,'2026-07-07','21:30',V[15],'Winner M86 vs Winner M88','M95'),
+  m('R16-8', null,null,null,'Round of 16',null,'2026-07-08','01:30',V[12],'Winner M85 vs Winner M87','M96'),
 
-  // ── GROUP STAGE · 28 Jun ─────────────────────────────────────────────────
-  { id: 'L5', homeTeam: 'PAN', awayTeam: 'ENG', group: 'L', phase: 'Group Stage', matchday: 3, date: '2026-06-28', kickoff: '02:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'L6', homeTeam: 'CRO', awayTeam: 'GHA', group: 'L', phase: 'Group Stage', matchday: 3, date: '2026-06-28', kickoff: '02:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'K5', homeTeam: 'COL', awayTeam: 'POR', group: 'K', phase: 'Group Stage', matchday: 3, date: '2026-06-28', kickoff: '05:00', venue: V[0].name,  city: V[0].city,  country: V[0].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'K6', homeTeam: 'COD', awayTeam: 'UZB', group: 'K', phase: 'Group Stage', matchday: 3, date: '2026-06-28', kickoff: '05:00', venue: V[6].name,  city: V[6].city,  country: V[6].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'J5', homeTeam: 'ALG', awayTeam: 'AUT', group: 'J', phase: 'Group Stage', matchday: 3, date: '2026-06-28', kickoff: '07:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'J6', homeTeam: 'JOR', awayTeam: 'ARG', group: 'J', phase: 'Group Stage', matchday: 3, date: '2026-06-28', kickoff: '07:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  finalHome: null, finalAway: null, status: 'upcoming' },
+  // ════════════════════════════════════════════════════════════════
+  //  QUARTER-FINALS  (Matches 97–100)
+  // ════════════════════════════════════════════════════════════════
+  m('QF-1', null,null,null,'Quarter-Final',null,'2026-07-10','01:30',V[7],'Winner M89 vs Winner M90','M97'),
+  m('QF-2', null,null,null,'Quarter-Final',null,'2026-07-11','00:30',V[2],'Winner M93 vs Winner M94','M98'),
+  m('QF-3', null,null,null,'Quarter-Final',null,'2026-07-12','02:30',V[4],'Winner M91 vs Winner M92','M99'),
+  m('QF-4', null,null,null,'Quarter-Final',null,'2026-07-12','06:30',V[8],'Winner M95 vs Winner M96','M100'),
 
-  // ── ROUND OF 32 (Matches 73–88) ─────────────────────────────────────────
-  { id: 'R32-1',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-06-29', kickoff: '00:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  label: 'Runner-up A vs Runner-up B',          matchLabel: 'M73', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-2',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-06-29', kickoff: '22:30', venue: V[1].name,  city: V[1].city,  country: V[1].country,  label: 'Winner E vs Best 3rd (A/B/C/D/F)',    matchLabel: 'M74', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-3',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-06-30', kickoff: '02:00', venue: V[2].name,  city: V[2].city,  country: V[2].country,  label: 'Winner F vs Runner-up C',             matchLabel: 'M75', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-4',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-06-30', kickoff: '06:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  label: 'Winner C vs Runner-up F',             matchLabel: 'M76', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-5',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-06-30', kickoff: '22:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  label: 'Winner I vs Best 3rd (C/D/F/G/H)',    matchLabel: 'M77', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-6',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-01', kickoff: '02:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  label: 'Runner-up E vs Runner-up I',          matchLabel: 'M78', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-7',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-01', kickoff: '06:30', venue: V[6].name,  city: V[6].city,  country: V[6].country,  label: 'Winner A vs Best 3rd (C/E/F/H/I)',    matchLabel: 'M79', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-8',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-01', kickoff: '21:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  label: 'Winner L vs Best 3rd (E/H/I/J/K)',    matchLabel: 'M80', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-9',  homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-02', kickoff: '01:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  label: 'Winner D vs Best 3rd (B/E/F/I/J)',    matchLabel: 'M81', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-10', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-02', kickoff: '05:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  label: 'Winner G vs Best 3rd (A/E/H/I/J)',    matchLabel: 'M82', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-11', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-03', kickoff: '00:30', venue: V[10].name, city: V[10].city, country: V[10].country, label: 'Runner-up K vs Runner-up L',           matchLabel: 'M83', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-12', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-03', kickoff: '04:30', venue: V[11].name, city: V[11].city, country: V[11].country, label: 'Winner H vs Runner-up J',              matchLabel: 'M84', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-13', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-03', kickoff: '08:30', venue: V[12].name, city: V[12].city, country: V[12].country, label: 'Winner B vs Best 3rd (E/F/G/I/J)',     matchLabel: 'M85', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-14', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-03', kickoff: '23:30', venue: V[13].name, city: V[13].city, country: V[13].country, label: 'Winner J vs Runner-up H',              matchLabel: 'M86', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-15', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-04', kickoff: '03:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  label: 'Winner K vs Best 3rd (D/E/I/J/L)',    matchLabel: 'M87', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R32-16', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 32', matchday: null, date: '2026-07-04', kickoff: '07:00', venue: V[1].name,  city: V[1].city,  country: V[1].country,  label: 'Runner-up D vs Runner-up G',          matchLabel: 'M88', finalHome: null, finalAway: null, status: 'upcoming' },
+  // ════════════════════════════════════════════════════════════════
+  //  SEMI-FINALS  (Matches 101–102)
+  // ════════════════════════════════════════════════════════════════
+  m('SF-1', null,null,null,'Semi-Final',null,'2026-07-15','00:30',V[1],'Winner M97 vs Winner M98','M101'),
+  m('SF-2', null,null,null,'Semi-Final',null,'2026-07-16','00:30',V[15],'Winner M99 vs Winner M100','M102'),
 
-  // ── ROUND OF 16 ───────────────────────────────────────────────────────────
-  { id: 'R16-1', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-04', kickoff: '22:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R16-2', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-05', kickoff: '02:30', venue: V[3].name,  city: V[3].city,  country: V[3].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R16-3', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-06', kickoff: '01:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R16-4', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-06', kickoff: '05:30', venue: V[5].name,  city: V[5].city,  country: V[5].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R16-5', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-07', kickoff: '00:30', venue: V[6].name,  city: V[6].city,  country: V[6].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R16-6', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-07', kickoff: '05:30', venue: V[7].name,  city: V[7].city,  country: V[7].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R16-7', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-07', kickoff: '21:30', venue: V[8].name,  city: V[8].city,  country: V[8].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'R16-8', homeTeam: null, awayTeam: null, group: null, phase: 'Round of 16', matchday: null, date: '2026-07-08', kickoff: '01:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
+  // ════════════════════════════════════════════════════════════════
+  //  THIRD PLACE  (Match 103)
+  // ════════════════════════════════════════════════════════════════
+  m('3RD', null,null,null,'Third Place',null,'2026-07-19','02:30',V[4],'Loser M101 vs Loser M102','M103'),
 
-  // ── QUARTER-FINALS ────────────────────────────────────────────────────────
-  { id: 'QF-1', homeTeam: null, awayTeam: null, group: null, phase: 'Quarter-Final', matchday: null, date: '2026-07-10', kickoff: '01:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'QF-2', homeTeam: null, awayTeam: null, group: null, phase: 'Quarter-Final', matchday: null, date: '2026-07-11', kickoff: '00:30', venue: V[2].name,  city: V[2].city,  country: V[2].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'QF-3', homeTeam: null, awayTeam: null, group: null, phase: 'Quarter-Final', matchday: null, date: '2026-07-12', kickoff: '02:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'QF-4', homeTeam: null, awayTeam: null, group: null, phase: 'Quarter-Final', matchday: null, date: '2026-07-12', kickoff: '06:30', venue: V[9].name,  city: V[9].city,  country: V[9].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-
-  // ── SEMI-FINALS ───────────────────────────────────────────────────────────
-  { id: 'SF-1', homeTeam: null, awayTeam: null, group: null, phase: 'Semi-Final', matchday: null, date: '2026-07-15', kickoff: '00:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-  { id: 'SF-2', homeTeam: null, awayTeam: null, group: null, phase: 'Semi-Final', matchday: null, date: '2026-07-16', kickoff: '00:30', venue: V[10].name, city: V[10].city, country: V[10].country, label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-
-  // ── THIRD PLACE ───────────────────────────────────────────────────────────
-  { id: '3RD', homeTeam: null, awayTeam: null, group: null, phase: 'Third Place', matchday: null, date: '2026-07-19', kickoff: '02:30', venue: V[4].name,  city: V[4].city,  country: V[4].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
-
-  // ── FINAL ─────────────────────────────────────────────────────────────────
-  { id: 'FIN', homeTeam: null, awayTeam: null, group: null, phase: 'Final', matchday: null, date: '2026-07-20', kickoff: '00:30', venue: V[0].name,  city: V[0].city,  country: V[0].country,  label: 'TBD vs TBD', finalHome: null, finalAway: null, status: 'upcoming' },
+  // ════════════════════════════════════════════════════════════════
+  //  FINAL  (Match 104)
+  // ════════════════════════════════════════════════════════════════
+  m('FIN', null,null,null,'Final',null,'2026-07-20','00:30',V[0],'Winner M101 vs Winner M102','M104'),
 ]
 
-export const PHASES = ['Group Stage', 'Round of 32', 'Round of 16', 'Quarter-Final', 'Semi-Final', 'Third Place', 'Final']
+export const PHASES = [
+  'Group Stage',
+  'Round of 32',
+  'Round of 16',
+  'Quarter-Final',
+  'Semi-Final',
+  'Third Place',
+  'Final',
+]
+
 export const GROUPS = ['A','B','C','D','E','F','G','H','I','J','K','L']
+
+// Map match number label → match id (for quick lookup)
+export const MATCH_LABEL_TO_ID = {}
+MATCHES.forEach(match => {
+  if (match.matchLabel) MATCH_LABEL_TO_ID[match.matchLabel] = match.id
+})

@@ -3,6 +3,7 @@ import { collection, query, where, getDocs, setDoc, doc, serverTimestamp } from 
 import { db } from '../firebase/config'
 import { useAuth } from '../context/AuthContext'
 import { MATCHES, TEAMS, PHASES } from '../firebase/matchData'
+import { useMatches } from '../hooks/useMatches'
 import { format, parseISO, isPast } from 'date-fns'
 
 const SCORE_OPTIONS = ['0','1','2','3','4','5','6','7','8']
@@ -112,6 +113,7 @@ function PredictModal({ match, existing, onSave, onClose }) {
 
 export default function Predict() {
   const { user } = useAuth()
+  const { matches } = useMatches()
   const [predictions, setPredictions] = useState({})
   const [activeModal, setActiveModal] = useState(null)
   const [phase, setPhase] = useState('Group Stage')
@@ -143,7 +145,15 @@ export default function Predict() {
     setPredictions(p => ({ ...p, [matchId]: { matchId, predictedHome, predictedAway, pointsEarned: null } }))
   }
 
-  const phaseMatches = MATCHES.filter(m => m.phase === phase && m.homeTeam)
+  // Show group stage always; show knockout matches only once both teams are assigned and finalised
+  // matches already sorted date+kickoff from useMatches; filter preserves that order
+  const phaseMatches = [...matches]
+    .filter(m => m.phase === phase && m.homeTeam && m.awayTeam)
+    .sort((a, b) => {
+      const dtA = (a.date || '') + 'T' + (a.kickoff || '00:00')
+      const dtB = (b.date || '') + 'T' + (b.kickoff || '00:00')
+      return dtA.localeCompare(dtB)
+    })
 
   const stats = {
     total: phaseMatches.length,
