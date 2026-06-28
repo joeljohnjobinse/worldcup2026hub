@@ -33,7 +33,8 @@ function PredictModal({ match, existing, onSave, onClose }) {
   }
 
   const kickoffDT = new Date(`${match.date}T${match.kickoff}`)
-  const locked = isPast(kickoffDT)
+  // Locked if kickoff has passed OR admin has already locked this prediction in Firestore
+  const locked = isPast(kickoffDT) || !!(existing?.lockedAt)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4" onClick={onClose}>
@@ -132,17 +133,34 @@ export default function Predict() {
   useEffect(() => { loadPredictions() }, [loadPredictions])
 
   async function savePrediction(matchId, predictedHome, predictedAway) {
-    const id = `${user.uid}_${matchId}`
-    await setDoc(doc(db, 'predictions', id), {
+    // Double-check kickoff lock on the client side before writing
+    const match = matches.find(m => m.id === matchId)
+    if (!match) return
+    const kickoffDT = new Date(`${match.date}T${match.kickoff}`)
+    if (isPast(kickoffDT)) {
+      alert('This match has already kicked off — predictions are locked.')
+      return
+    }
+
+    const id  = `${user.uid}_${matchId}`
+    const existing = predictions[matchId]
+
+    // On create: set lockedAt to null (server rules check this)
+    // On update: only allowed if lockedAt is still null (server enforces)
+    const data = {
       id,
       userId: user.uid,
       matchId,
       predictedHome,
       predictedAway,
       pointsEarned: null,
-      createdAt: serverTimestamp(),
-    }, { merge: true })
-    setPredictions(p => ({ ...p, [matchId]: { matchId, predictedHome, predictedAway, pointsEarned: null } }))
+      lockedAt: null,                  // null = still editable; set to timestamp at kickoff
+      updatedAt: serverTimestamp(),
+      ...(existing ? {} : { createdAt: serverTimestamp() }),
+    }
+
+    await setDoc(doc(db, 'predictions', id), data, { merge: true })
+    setPredictions(p => ({ ...p, [matchId]: { matchId, predictedHome, predictedAway, pointsEarned: null, lockedAt: null } }))
   }
 
   // Show group stage always; show knockout matches only once both teams are assigned and finalised
@@ -216,7 +234,8 @@ export default function Predict() {
           {phaseMatches.map(m => {
             const pred = predictions[m.id]
             const kickoffDT = new Date(`${m.date}T${m.kickoff}`)
-            const locked = isPast(kickoffDT)
+            // Locked if kickoff has passed OR admin has already locked this prediction
+            const locked = isPast(kickoffDT) || !!(pred?.lockedAt)
             return (
               <div
                 key={m.id}

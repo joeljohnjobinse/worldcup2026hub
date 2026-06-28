@@ -31,13 +31,32 @@ export function useMatches() {
       return 0
     })
 
+  async function lockPredictions(matchId) {
+    // Called when a match goes live or is resolved.
+    // Writes lockedAt timestamp to every prediction for this match.
+    // Once lockedAt is set, Firestore rules block any user edits.
+    const { collection, query, where, getDocs, writeBatch, serverTimestamp } = await import('firebase/firestore')
+    const snap = await getDocs(query(collection(db, 'predictions'), where('matchId', '==', matchId)))
+    if (snap.empty) return
+    const batch = writeBatch(db)
+    snap.forEach(predDoc => {
+      // Only lock predictions that aren't already locked
+      if (!predDoc.data().lockedAt) {
+        batch.update(doc(db, 'predictions', predDoc.id), { lockedAt: serverTimestamp() })
+      }
+    })
+    await batch.commit()
+  }
+
   async function updateMatchResult(matchId, finalHome, finalAway) {
+    await lockPredictions(matchId)
     await setDoc(doc(db, 'matches', matchId), {
       finalHome, finalAway, status: 'finished'
     }, { merge: true })
   }
 
   async function setMatchLive(matchId) {
+    await lockPredictions(matchId)
     await setDoc(doc(db, 'matches', matchId), { status: 'live' }, { merge: true })
   }
 
