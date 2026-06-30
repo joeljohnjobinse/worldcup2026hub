@@ -223,30 +223,49 @@ function KnockoutTab({ matches, updateKnockoutTeam, clearKnockoutTeams, finalise
     setScores(s => ({ ...s, [matchId]: { ...(s[matchId] || {}), [key]: val } }))
 
   async function resolveKnockout(match) {
-    const sc = scores[match.id]
-    if (!sc || sc.home === '' || sc.home === undefined || sc.away === '' || sc.away === undefined)
+    const sc = scores[match.id] || {}
+    if (sc.home === '' || sc.home === undefined || sc.away === '' || sc.away === undefined)
       return alert('Enter both scores first.')
     const fh = parseInt(sc.home), fa = parseInt(sc.away)
     if (isNaN(fh) || isNaN(fa)) return alert('Scores must be numbers.')
-    if (fh === fa) return alert('Knockout matches cannot end in a draw. Add AET/penalty winner.')
+
+    // If draw, penalty scores are required to determine the winner
+    const isPenalties = fh === fa
+    if (isPenalties) {
+      const ph = parseInt(sc.penHome), pa = parseInt(sc.penAway)
+      if (isNaN(ph) || isNaN(pa)) return alert('Scores are level — enter the penalty shootout score to determine the winner.')
+      if (ph === pa) return alert('Penalty scores cannot be equal — there must be a winner.')
+    }
+
+    const ph = parseInt(sc.penHome) || 0
+    const pa = parseInt(sc.penAway) || 0
+
+    // The actual winner: if level after 90+ET, decided by penalties
+    const actualWinner = fh > fa ? 'home' : fa > fh ? 'away' : ph > pa ? 'home' : 'away'
+
     setResolving(match.id)
     try {
-      await updateMatchResult(match.id, fh, fa)
+      await updateMatchResult(match.id, fh, fa, isPenalties ? ph : null, isPenalties ? pa : null)
       const predSnap = await getDocs(query(collection(db, 'predictions'), where('matchId', '==', match.id)))
-      const actual   = fh > fa ? 'home' : 'away'
       const batch    = writeBatch(db)
       predSnap.forEach(predDoc => {
         const pred      = predDoc.data()
-        const predicted = pred.predictedHome > pred.predictedAway ? 'home'
+        // For scoring: correct result = predicted the right winner
+        // In knockout, a "draw" prediction means the user thought it would go to pens
+        // We award 1pt for correct winner, +5 for exact 90-min score
+        const predictedWinner = pred.predictedHome > pred.predictedAway ? 'home'
           : pred.predictedAway > pred.predictedHome ? 'away' : 'draw'
         let pts = 0
-        if (predicted === actual) pts += 1
+        if (predictedWinner === actualWinner) pts += 1
         if (pred.predictedHome === fh && pred.predictedAway === fa) pts += 5
         batch.update(doc(db, 'predictions', predDoc.id), { pointsEarned: pts })
         if (pts > 0) batch.update(doc(db, 'users', pred.userId), { totalPoints: increment(pts) })
       })
       await batch.commit()
-      setSuccess(`✅ ${match.homeTeam} ${fh}–${fa} ${match.awayTeam} resolved!`)
+      const scoreStr = isPenalties
+        ? `${fh}–${fa} AET (${ph}–${pa} pens)`
+        : `${fh}–${fa}`
+      setSuccess(`✅ ${match.homeTeam} ${scoreStr} ${match.awayTeam} resolved!`)
       setTimeout(() => setSuccess(''), 5000)
     } catch (err) { alert('Error: ' + err.message) }
     finally { setResolving(null) }
@@ -450,10 +469,23 @@ function KnockoutTab({ matches, updateKnockoutTeam, clearKnockoutTeams, finalise
                     </div>
                   )}
                   {!isFinished && (
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <input type="number" min="0" max="20" value={sc.home ?? ''} onChange={e => setScore(match.id,'home',e.target.value)} className="w-14 input text-center font-display text-lg font-bold p-1.5" placeholder="–" />
-                      <span className="text-wc-muted font-bold">–</span>
-                      <input type="number" min="0" max="20" value={sc.away ?? ''} onChange={e => setScore(match.id,'away',e.target.value)} className="w-14 input text-center font-display text-lg font-bold p-1.5" placeholder="–" />
+                    <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                      {/* 90-min / AET score */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-wc-muted uppercase tracking-widest hidden sm:block">Score</span>
+                        <input type="number" min="0" max="20" value={sc.home ?? ''} onChange={e => setScore(match.id,'home',e.target.value)} className="w-14 input text-center font-display text-lg font-bold p-1.5" placeholder="–" />
+                        <span className="text-wc-muted font-bold">–</span>
+                        <input type="number" min="0" max="20" value={sc.away ?? ''} onChange={e => setScore(match.id,'away',e.target.value)} className="w-14 input text-center font-display text-lg font-bold p-1.5" placeholder="–" />
+                      </div>
+                      {/* Penalty row — only show when scores are equal */}
+                      {sc.home !== '' && sc.away !== '' && sc.home !== undefined && sc.away !== undefined && parseInt(sc.home) === parseInt(sc.away) && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-wc-gold uppercase tracking-widest font-bold hidden sm:block">Pens</span>
+                          <input type="number" min="0" max="30" value={sc.penHome ?? ''} onChange={e => setScore(match.id,'penHome',e.target.value)} className="w-14 input text-center font-display text-lg font-bold p-1.5 border-wc-gold/50 text-wc-gold" placeholder="–" />
+                          <span className="text-wc-gold font-bold">–</span>
+                          <input type="number" min="0" max="30" value={sc.penAway ?? ''} onChange={e => setScore(match.id,'penAway',e.target.value)} className="w-14 input text-center font-display text-lg font-bold p-1.5 border-wc-gold/50 text-wc-gold" placeholder="–" />
+                        </div>
+                      )}
                     </div>
                   )}
                   <div className="flex gap-2 flex-shrink-0">

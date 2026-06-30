@@ -48,10 +48,12 @@ export function useMatches() {
     await batch.commit()
   }
 
-  async function updateMatchResult(matchId, finalHome, finalAway) {
+  async function updateMatchResult(matchId, finalHome, finalAway, penHome = null, penAway = null) {
     await lockPredictions(matchId)
     await setDoc(doc(db, 'matches', matchId), {
-      finalHome, finalAway, status: 'finished'
+      finalHome, finalAway,
+      penHome,  penAway,           // null if decided in 90/ET, set if decided by penalties
+      status: 'finished'
     }, { merge: true })
   }
 

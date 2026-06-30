@@ -87,10 +87,26 @@ export default function MatchCard({ match, prediction, onClick }) {
           {/* Score / VS */}
           <div className="flex flex-col items-center gap-1 min-w-[80px]">
             {isFinished ? (
-              <div className="flex items-center gap-2">
-                <span className="font-display text-2xl font-black text-wc-gold">{match.finalHome}</span>
-                <span className="text-wc-muted font-bold">–</span>
-                <span className="font-display text-2xl font-black text-wc-gold">{match.finalAway}</span>
+              <div className="flex flex-col items-center gap-0.5">
+                {/* Main score */}
+                <div className="flex items-center gap-2">
+                  <span className="font-display text-2xl font-black text-wc-gold">{match.finalHome}</span>
+                  <span className="text-wc-muted font-bold">–</span>
+                  <span className="font-display text-2xl font-black text-wc-gold">{match.finalAway}</span>
+                </div>
+                {/* Penalty score — shown only when match went to pens */}
+                {match.penHome !== null && match.penHome !== undefined && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-wc-muted uppercase tracking-widest font-semibold">Pens</span>
+                    <span className="font-display text-sm font-black text-wc-gold">
+                      ({match.penHome}–{match.penAway})
+                    </span>
+                  </div>
+                )}
+                {/* AET label */}
+                {match.finalHome === match.finalAway && match.penHome !== null && match.penHome !== undefined && (
+                  <span className="text-[9px] text-wc-muted uppercase tracking-widest">AET</span>
+                )}
               </div>
             ) : (
               <div className="font-display text-xl font-bold text-wc-muted">VS</div>

@@ -163,6 +163,11 @@ export default function Profile() {
                       <div className="font-display text-lg font-black text-white">
                         {match.finalHome}–{match.finalAway}
                       </div>
+                      {match.penHome !== null && match.penHome !== undefined && (
+                        <div className="text-xs text-wc-gold font-semibold">
+                          ({match.penHome}–{match.penAway} pens)
+                        </div>
+                      )}
                     </div>
                   )}
 

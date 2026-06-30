@@ -94,8 +94,9 @@ function PredictModal({ match, existing, onSave, onClose }) {
               </div>
             )}
 
-            <div className="text-xs text-wc-muted bg-wc-border/30 rounded-lg p-2.5 mb-4 text-center">
-              Correct result → 1 pt · Exact score → 6 pts total
+            <div className="text-xs text-wc-muted bg-wc-border/30 rounded-lg p-2.5 mb-4 text-center leading-relaxed">
+              Correct winner → 1 pt · Exact 90-min score → +5 pts
+              {match.group ? '' : <span className="block mt-1 text-wc-gold/80">Predict a draw = predicting penalties</span>}
             </div>
 
             <button
